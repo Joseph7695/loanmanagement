@@ -1,0 +1,30 @@
+meta {
+  name: Extend repayment
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/repayment/extend
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+      "id": 67,
+      "repaymentAmount": 250,
+      "receivedAmount": 120,
+      "targetRepaymentDate": "2024-03-12T16:00:00.000Z",
+      "extendedRepaymentDate": "2024-03-13T16:00:00.000Z",
+      "extendedRepaymentDateHistory": ",undefined,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z,2024-03-13T16:00:00.000Z",
+      "repaymentAmountHistory": ",250,250,250,250,250,250,250,250,250,250",
+      "receivedAmountHistory": ",0,120,120,120,120,120,120,120,120,120",
+      "isUnlimitedRepayment": false,
+      "isPaid": false
+    }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: specific user
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:3000/loans/ofuser?customerid=5
+  body: none
+  auth: bearer
+}
+
+query {
+  customerid: 5
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}

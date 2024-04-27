@@ -1,0 +1,298 @@
+<ng-template #accessDenied>
+  <label class="text-danger">(No Permission)</label>
+</ng-template>
+
+<ng-template #blackListModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Click Submit to confirm joining the blacklist
+      <h4 class="text-primary">{{ selectedCustomer.name }}</h4>
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>
+
+<div>
+  <div class="row">
+    <div class="col-4">
+      <label class="icon-magnifier"> Search By Name or IC</label>
+      <input
+        #searchBox
+        id="search-box"
+        (input)="search(searchBox.value)"
+        type="text"
+        id="office-form-2"
+        class="form-control"
+        name="searchBar"
+        [style]="'background-color: #E6E6FA'"
+        placeholder="Search the Name column..."
+      />
+    </div>
+  </div>
+</div>
+<br />
+
+<ul class="list-unstyled mb-0">
+  <li class="d-inline-block mr-2">
+    <fieldset>
+      <div class="custom-control custom-radio">
+        <input
+          type="radio"
+          class="custom-control-input"
+          name="showList"
+          id="showAll-radio"
+          checked=""
+          (change)="renewList(1)"
+        />
+        <label class="custom-control-label" for="showAll-radio">Show All</label>
+      </div>
+    </fieldset>
+  </li>
+  <li class="d-inline-block mr-2">
+    <fieldset>
+      <div class="custom-control custom-radio">
+        <input
+          type="radio"
+          class="custom-control-input"
+          name="showList"
+          id="showBlackList-radio"
+          (change)="renewList(2)"
+        />
+        <label class="custom-control-label" for="showBlackList-radio"
+          >Show Only Black List</label
+        >
+      </div>
+    </fieldset>
+  </li>
+  <li class="d-inline-block mr-2">
+    <fieldset>
+      <div class="custom-control custom-radio">
+        <input
+          type="radio"
+          class="custom-control-input"
+          name="showList"
+          id="showNoBlackList-radio"
+          (change)="renewList(3)"
+        />
+        <label class="custom-control-label" for="showNoBlackList-radio"
+          >Show Without Black List</label
+        >
+      </div>
+    </fieldset>
+  </li>
+</ul>
+<br />
+<div class="row">
+  <div class="col-sm" *ngIf="httpService.role == 'SUPERADMIN'">
+    <button
+      type="button"
+      class="btn btn-primary position-relative"
+      routerLink="/forms/createNewCustomer"
+      [style.font-size]="'max(1vw, 10px)'"
+    >
+      <i class="icon-user-follow"> New Customer</i>
+    </button>
+  </div>
+</div>
+
+<section id="customers">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" [style.font-size]="'max(1.3vw, 15px)'">
+            Customers List
+          </div>
+        </div>
+        <div class="card-content table-responsive">
+          <div class="card-body">
+            <ngx-datatable
+              class="bootstrap core-bootstrap"
+              [rows]="customers$ | async"
+              [rowHeight]="'auto'"
+              [externalPaging]="true"
+              [count]="totalItems"
+              [offset]="comboParam.currentPage"
+              (page)="setPage($event)"
+              [style.font-size]="'max(max(1vw, 10px), 10px)'"
+              [columnMode]="ColumnMode.force"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [scrollbarH]="true"
+              [scrollbarV]="false"
+            >
+              <ngx-datatable-column
+                name="Action"
+                class="ngxTable"
+                prop="id"
+                [width]="100"
+                *ngIf="httpService.role == 'SUPERADMIN'"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a>
+                        <i
+                          class="icon-note fa-lg text-primary mr-2"
+                          routerLink="/tables/customerDetails/{{ row.id }}/edit"
+                        ></i>
+                      </a>
+                      <a>
+                        <i
+                          class="mr-2 fa-lg"
+                          [ngClass]="{
+                            'icon-user-following text-success':
+                              row.isBlacklist == false,
+                            'icon-user-unfollow text-danger':
+                              row.isBlacklist == true
+                          }"
+                          (click)="blacklist(row, blackListModal)"
+                        >
+                        </i>
+                      </a>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Name" prop="name" [width]="200">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/customerDetails/{{ row.id }}"
+                        class="text-info"
+                        >{{ row.name }}
+                      </a>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="IC" prop="name" [width]="200">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/customerDetails/{{ row.id }}"
+                        class="text-info"
+                        *ngIf="
+                          ['SUPERADMIN', 'COLLECTOR'].includes(
+                            httpService.role
+                          );
+                          else notSuperAdmin
+                        "
+                        >{{ row.ic }}
+                      </a>
+                      <ng-template #notSuperAdmin>
+                        <p>{{ row.ic }}</p>
+                      </ng-template>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column
+                name="Agent Name"
+                prop="agentname"
+                [width]="180"
+                *ngIf="
+                  httpService.role == 'SUPERADMIN' ||
+                  httpService.role == 'COLLECTOR'
+                "
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p>
+                        {{ row.user?.name ?? "No agent" }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column
+                name="Phone Number"
+                prop="icImagePath"
+                [width]="180"
+                *ngIf="
+                  httpService.role == 'SUPERADMIN' ||
+                  httpService.role == 'COLLECTOR'
+                "
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p>
+                        {{ row.phoneNumber }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column
+                name="Is In Blacklist"
+                prop="id"
+                [width]="50"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p>{{ row.isBlacklist ? "Yes" : "No" }}</p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

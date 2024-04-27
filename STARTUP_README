@@ -1,0 +1,16 @@
+SETUP:
+1. docker run -d -e MYSQL_USER=sysadmin -e MYSQL_PASSWORD=password -e MYSQL_ROOT_PASSWORD=root_password -p 3306:3306 --name redactedclientnamedocker mysql:latest
+2. create database redactedclientname in mysql database
+3. npm install in backend & frontend projects
+4. npm run start in backend & frontend projects
+
+DEPLOYMENT STEPS:
+Frontend:
+1. ng build --configuration production
+2. Copy all files in dist -> public_html (or other path where your webserver going to serve)
+
+Backend:
+1. ng run build
+2. Copy all files in dist -> nodeapi18 (or other path where your server is going to serve your api from)
+3. (cpanel) Copy package.json -> nodeapi18, because need to run npm install to download the packages
+

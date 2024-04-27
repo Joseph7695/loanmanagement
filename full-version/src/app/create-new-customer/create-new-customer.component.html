@@ -1,0 +1,580 @@
+<div class="col-lg">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Create New Customer</h4>
+    </div>
+
+    <div class="card-content">
+      <div class="card-body">
+        <!-- <p>This is the most basic and default form having inputs, labels and buttons.</p> -->
+        <form [formGroup]="createCustomerForm">
+          <div class="icon-user title">Customer Details</div>
+          <br />
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="name-form-1">Name</label>
+                <input
+                  [(ngModel)]="model.name"
+                  type="text"
+                  id="name-form-1"
+                  class="form-control"
+                  name="name"
+                  formControlName="name"
+                  placeholder="Customer Name"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.name.invalid,
+                    'is-valid': createCustomerFormSubmitted && !lf.name.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="ic-form-1">Identity Card (IC)</label>
+                <input
+                  [(ngModel)]="model.ic"
+                  type="text"
+                  id="ic-form-1"
+                  class="form-control"
+                  name="ic"
+                  formControlName="ic"
+                  placeholder="IC"
+                  [ngClass]="{
+                    'is-invalid': createCustomerFormSubmitted && lf.ic.invalid,
+                    'is-valid': createCustomerFormSubmitted && !lf.ic.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="ic-form-2">Upload IC Image</label>
+
+              <input
+                #ic
+                (change)="onChange(ic, icImage)"
+                type="file"
+                class="form-control-file"
+                id="ic-form-2"
+              />
+              <input
+                [(ngModel)]="model.icImagePath"
+                name="icImagePath"
+                type="hidden"
+                formControlName="icImagePath"
+                [ngClass]="{
+                  'is-invalid':
+                    createCustomerFormSubmitted && lf.icImagePath.invalid,
+                  'is-valid':
+                    createCustomerFormSubmitted && !lf.icImagePath.invalid
+                }"
+                required
+              />
+
+              <div
+                *ngIf="
+                  createCustomerFormSubmitted &&
+                  (lf.icImagePathinvalid || lf.icImagePath.errors?.required)
+                "
+                class="help-block mt-1 text-danger"
+              >
+                <i class="ft-alert-circle align-middle"></i> This is required
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="phone-form-1">Phone Number</label>
+                <input
+                  [(ngModel)]="model.phoneNumber"
+                  type="text"
+                  id="phone-form-1"
+                  class="form-control"
+                  name="phoneNumber"
+                  formControlName="phoneNumber"
+                  placeholder="Phone Number"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.phoneNumber.invalid,
+                    'is-valid':
+                      createCustomerFormSubmitted && !lf.phoneNumber.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="carPlate-form-1">Car Plate Number</label>
+                <input
+                  [(ngModel)]="model.carPlateNumber"
+                  type="text"
+                  id="carPlate-form-1"
+                  class="form-control"
+                  name="carPlateNumber"
+                  formControlName="carPlateNumber"
+                  placeholder="Car Plate Number"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.carPlateNumber.invalid,
+                    'is-valid':
+                      createCustomerFormSubmitted && !lf.carPlateNumber.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="icon-home title">Home</div>
+          <br />
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="home-form-1">Upload Home Address Image</label>
+              <input
+                #home
+                (change)="onChange(home, homeAddressImagePath)"
+                type="file"
+                class="form-control-file"
+                id="home-form-1"
+              />
+            </div>
+            <div class="form-group mb-2">
+              <label for="home-form-2">Home Address Google Map URL</label>
+              <input
+                [(ngModel)]="model.homeAddressGoogleMapsUrl"
+                type="text"
+                id="home-form-2"
+                class="form-control"
+                name="homeAddressGoogleMapsUrl"
+                formControlName="homeAddressGoogleMapsUrl"
+                placeholder="Home Address Google Maps Url"
+                [ngClass]="{
+                  'is-invalid':
+                    createCustomerFormSubmitted &&
+                    lf.homeAddressGoogleMapsUrl.invalid,
+                  'is-valid':
+                    createCustomerFormSubmitted &&
+                    !lf.homeAddressGoogleMapsUrl.invalid
+                }"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="waterBill-form-1"
+                >Upload Water Utility Bill Image</label
+              >
+              <input
+                #waterBill
+                (change)="onChange(waterBill, waterUtilityBillImagePath)"
+                type="file"
+                class="form-control-file"
+                id="waterBill-form-1"
+              />
+            </div>
+            <div class="form-group mb-2">
+              <label for="electricBill-form-1"
+                >Upload Electric Utility Bill Image</label
+              >
+              <input
+                #electricBill
+                (change)="onChange(electricBill, electricUtilityBillImagePath)"
+                type="file"
+                class="form-control-file"
+                id="electricBill-form-1"
+              />
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="ft-briefcase title">Company</div>
+          <br />
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="company-form-1">Company Name</label>
+                <input
+                  [(ngModel)]="model.companyName"
+                  type="text"
+                  id="company-form-1"
+                  class="form-control"
+                  name="companyName"
+                  formControlName="companyName"
+                  placeholder="Company Name"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.companyName.invalid,
+                    'is-valid':
+                      createCustomerFormSubmitted && !lf.companyName.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="office-form-1">Upload Office Address Image</label>
+              <input
+                #office
+                (change)="onChange(office, officeLocationImagePath)"
+                type="file"
+                class="form-control-file"
+                id="office-form-1"
+              />
+            </div>
+            <div class="form-group mb">
+              <label for="office-form-2">Office Address Google Map URL</label>
+              <input
+                [(ngModel)]="model.officeLocationGoogleMapsUrl"
+                type="text"
+                id="office-form-2"
+                class="form-control"
+                formControlName="officeLocationGoogleMapsUrl"
+                name="officeLocationGoogleMapsUrl"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="occupation-form-1">Occupation</label>
+                <input
+                  [(ngModel)]="model.occupation"
+                  type="text"
+                  id="occupation-form-1"
+                  class="form-control"
+                  name="occupation"
+                  formControlName="occupation"
+                  placeholder="Occupation"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.occupation.invalid,
+                    'is-valid':
+                      createCustomerFormSubmitted && !lf.occupation.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="salary-form-1">Salary</label>
+                <input
+                  [(ngModel)]="model.salary"
+                  type="number"
+                  id="salary-form-1"
+                  class="form-control"
+                  name="salary"
+                  formControlName="salary"
+                  [ngClass]="{
+                    'is-invalid':
+                      createCustomerFormSubmitted && lf.salary.invalid,
+                    'is-valid':
+                      createCustomerFormSubmitted && !lf.salary.invalid
+                  }"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="salarySlip-form-1">Upload Salary Slip Image</label>
+              <input
+                #salarySlip
+                (change)="onChange(salarySlip, salarySlipImagePath)"
+                type="file"
+                class="form-control-file"
+                id="salarySlip-form-1"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="occupation-form-1">Agent In Charge: </label>
+
+                <!-- <span
+                *ngIf="
+                  createCustomerForm.get('user').errors &&
+                  createCustomerForm.get('user').errors['required']
+                "
+                class="text-danger"
+              >
+                <i class="ft-alert-circle"> This is required</i>
+              </span> -->
+                <ng-select
+                  [(ngModel)]="model.user"
+                  [items]="users$ | async"
+                  name="users"
+                  id="users"
+                  bindLabel="name"
+                  [addTag]="false"
+                  [multiple]="false"
+                  [hideSelected]="true"
+                  [trackByFn]="trackByFn"
+                  [minTermLength]="1"
+                  [loading]="peopleLoading"
+                  typeToSearchText="Please enter Name to search..."
+                  [typeahead]="peopleInput$"
+                  formControlName="user"
+                  required
+                >
+                </ng-select>
+                <div
+                  *ngIf="
+                    createCustomerFormSubmitted &&
+                    createCustomerForm.get('user').errors &&
+                    createCustomerForm.get('user').errors['required']
+                  "
+                  class="help-block mt-1 text-danger"
+                >
+                  <i class="ft-alert-circle align-middle"></i> This is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+          <div class="ft-alert-circle title">Emergency Contact</div>
+          <br />
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-11">Person 1 Name</label>
+                <input
+                  [(ngModel)]="model.emergencyContactName"
+                  type="text"
+                  id="emergency-form-11"
+                  class="form-control"
+                  name="emergencyContactName"
+                  formControlName="emergencyContactName"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-21">Person 1 Phone Number</label>
+                <input
+                  [(ngModel)]="model.emergencyContactNumber"
+                  type="text"
+                  id="emergency-form-21"
+                  class="form-control"
+                  name="emergencyContactNumber"
+                  formControlName="emergencyContactNumber"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-12">Person 2 Name</label>
+                <input
+                  [(ngModel)]="model.emergencyContactName2"
+                  type="text"
+                  id="emergency-form-12"
+                  class="form-control"
+                  name="emergencyContactName2"
+                  formControlName="emergencyContactName2"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-22">Person 2 Phone Number</label>
+                <input
+                  [(ngModel)]="model.emergencyContactNumber2"
+                  type="text"
+                  id="emergency-form-22"
+                  class="form-control"
+                  name="emergencyContactNumber2"
+                  formControlName="emergencyContactNumber2"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-13">Person 3 Name</label>
+                <input
+                  [(ngModel)]="model.emergencyContactName3"
+                  type="text"
+                  id="emergency-form-13"
+                  class="form-control"
+                  name="emergencyContactName3"
+                  formControlName="emergencyContactName3"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-23">Person 3 Phone Number</label>
+                <input
+                  [(ngModel)]="model.emergencyContactNumber3"
+                  type="text"
+                  id="emergency-form-23"
+                  class="form-control"
+                  name="emergencyContactNumber3"
+                  formControlName="emergencyContactNumber3"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-14">Person 4 Name</label>
+                <input
+                  [(ngModel)]="model.emergencyContactName4"
+                  type="text"
+                  id="emergency-form-14"
+                  class="form-control"
+                  name="emergencyContactName4"
+                  formControlName="emergencyContactName4"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-24">Person 4 Phone Number</label>
+                <input
+                  [(ngModel)]="model.emergencyContactNumber4"
+                  type="text"
+                  id="emergency-form-24"
+                  class="form-control"
+                  name="emergencyContactNumber4"
+                  formControlName="emergencyContactNumber4"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-15">Person 5 Name</label>
+                <input
+                  [(ngModel)]="model.emergencyContactName5"
+                  type="text"
+                  id="emergency-form-15"
+                  class="form-control"
+                  name="emergencyContactName5"
+                  formControlName="emergencyContactName5"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group mb-2">
+                <label for="emergency-form-25">Person 5 Phone Number</label>
+                <input
+                  [(ngModel)]="model.emergencyContactNumber5"
+                  type="text"
+                  id="emergency-form-25"
+                  class="form-control"
+                  name="emergencyContactNumber5"
+                  formControlName="emergencyContactNumber5"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- <hr />
+          <div class="ft-book h3">Supported Document</div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="hardcopy-form-1">Upload Contract Image</label>
+              <input
+                #hardcopy-form-1
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-1"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #hardcopy-form-2
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-2"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #hardcopy-form-3
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-3"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #hardcopy-form-4
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-4"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #hardcopy-form-5
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-5"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #hardcopy-form-6
+                (change)="onChange(file, icImage)"
+                type="file"
+                class="form-control-file"
+                id="hardcopy-form-6"
+              />
+            </div>
+          </div> -->
+          <br />
+          <button
+            type="button"
+            class="btn btn-primary mr-2"
+            (click)="onSubmit()"
+          >
+            <i class="ft-check-square mr-1"></i>Submit
+          </button>
+          <button type="button" class="btn btn-secondary" backButton>
+            <i class="ft-x mr-1"></i>Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

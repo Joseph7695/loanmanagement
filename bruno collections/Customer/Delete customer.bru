@@ -1,0 +1,22 @@
+meta {
+  name: Delete customer
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/customers/delete
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+    "id": 8
+  }
+  
+}

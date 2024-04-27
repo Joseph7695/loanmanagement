@@ -1,0 +1,405 @@
+<div class="col-lg">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">
+        Create New Loan ({{ isUnlimitedView ? "Unlimited" : "Normal" }})
+      </h4>
+    </div>
+
+    <div class="card-content">
+      <div class="card-body">
+        <!-- <p>This is the most basic and default form having input                    [(ngModel)]="model.customer"s, labels and buttons.</p> -->
+        <form [formGroup]="createLoanForm">
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <div class="icon-notebook title">Loan Details</div>
+                <br />
+
+                <label>Customer Name</label>
+                <div class="form-group col-6">
+                  <!-- <input
+                  list="customers"
+                  type="text"
+                  id="name-form-1"
+                  class="form-control"
+                  name="customer"
+
+
+                  >
+                  <datalist [(ngModel)]="model.customer"id="customers" [style.font-size]="'20000px'">
+                    <option *ngFor="let customer of customers" value="{{ customer.id }}" >
+                      {{ customer.name }}
+                    </option>
+                  </datalist> -->
+                  <!-- [addTag]="false" 阻止你加不存在的
+                    [multiple]="false" 阻止你多选项 -->
+                  <ng-select
+                    (change)="customerSelected($event)"
+                    [(ngModel)]="model.customer"
+                    [items]="customers$ | async"
+                    name="customers"
+                    id="customers"
+                    bindLabel="name"
+                    [addTag]="false"
+                    [multiple]="false"
+                    [hideSelected]="true"
+                    [trackByFn]="trackByFn"
+                    [minTermLength]="1"
+                    [loading]="peopleLoading"
+                    typeToSearchText="Please enter Name to search..."
+                    [typeahead]="peopleInput$"
+                    formControlName="customer"
+                    required
+                  >
+                  </ng-select>
+                  <div
+                    *ngIf="
+                      createLoanFormSubmitted &&
+                      createLoanForm.get('customer').errors &&
+                      createLoanForm.get('customer').errors['required']
+                    "
+                    class="help-block mt-1 text-danger"
+                  >
+                    <i class="ft-alert-circle align-middle"></i> This is
+                    required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Agent Name</label>
+                <div class="form-group col-6">
+                  <!-- [addTag]="false" 阻止你加不存在的
+                    [multiple]="false" 阻止你多选项 -->
+                  <ng-select
+                    [(ngModel)]="model.user"
+                    [items]="users$ | async"
+                    name="users"
+                    id="users"
+                    bindLabel="name"
+                    [addTag]="false"
+                    [multiple]="false"
+                    [hideSelected]="true"
+                    [trackByFn]="trackByFnUser"
+                    [minTermLength]="1"
+                    [loading]="peopleLoading"
+                    typeToSearchText="Please enter Name to search..."
+                    [typeahead]="peopleInput$"
+                    formControlName="user"
+                    required
+                  >
+                  </ng-select>
+                  <div
+                    *ngIf="
+                      createLoanFormSubmitted &&
+                      createLoanForm.get('user').errors &&
+                      createLoanForm.get('user').errors['required']
+                    "
+                    class="help-block mt-1 text-danger"
+                  >
+                    <i class="ft-alert-circle align-middle"></i> This is
+                    required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Package Name</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.name"
+                    type="text"
+                    id="name-form-1"
+                    class="form-control"
+                    name="name"
+                    formControlName="name"
+                    [ngClass]="{
+                      'is-invalid': createLoanFormSubmitted && lf.name.invalid,
+                      'is-valid': createLoanFormSubmitted && !lf.name.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Borrowed Amount</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.loanedAmount"
+                    type="number"
+                    id="loanedAmount-form-1"
+                    class="form-control"
+                    name="loanedAmount"
+                    formControlName="loanedAmount"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted && lf.loanedAmount.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted && !lf.loanedAmount.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label>Application Date</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="selectedDate"
+                    type="date"
+                    id="loanDate-form-1"
+                    class="form-control"
+                    name="loanApplicationDate"
+                    formControlName="loanApplicationDate"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted &&
+                        lf.loanApplicationDate.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted &&
+                        !lf.loanApplicationDate.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label>Loan Repaymnet Frequency</label>
+                <div class="form-group col-6">
+                  <select
+                    name="loanRepaymentFrequency"
+                    [(ngModel)]="model.loanRepaymentFrequency"
+                    id="loanRepaymentFrequency"
+                    class="form-control"
+                    formControlName="loanRepaymentFrequency"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted &&
+                        lf.loanRepaymentFrequency.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted &&
+                        !lf.loanRepaymentFrequency.invalid
+                    }"
+                    required
+                  >
+                    <option value="WEEKLY">WEEKLY</option>
+                    <option value="MONTHLY">MONTHLY</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!--
+            <div class="col-12">
+              <div class="form-group">
+                <label>Is Unlimited Loan</label>
+                <div class="form-group col-6">
+                  <select
+                    name="loanRepaymentFrequency"
+                    [(ngModel)]="model.isUnlimited"
+                    id="loanRepaymentFrequency"
+                    class="form-control"
+                  >
+                    <option :value="true">Yes</option>
+                    <option :value="false">No</option>
+                  </select>
+                </div>
+              </div>
+            </div> -->
+            <div class="col-12" *ngIf="!isUnlimitedView">
+              <div class="form-group">
+                <label>Loan Repayment Total Count</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.loanRepaymentTotalCount"
+                    type="number"
+                    id="name-form-1"
+                    class="form-control"
+                    name="loanRepaymentTotalCount"
+                    formControlName="loanRepaymentTotalCount"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted &&
+                        lf.loanRepaymentTotalCount.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted &&
+                        !lf.loanRepaymentTotalCount.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Loan Repayment Amount (Single)</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.loanSingleRepaymentAmount"
+                    type="number"
+                    id="loanSingleRepaymentAmount-form-1"
+                    class="form-control"
+                    name="loanSingleRepaymentAmount"
+                    formControlName="loanSingleRepaymentAmount"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted &&
+                        lf.loanSingleRepaymentAmount.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted &&
+                        !lf.loanSingleRepaymentAmount.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="isUnlimitedView">
+              <div class="form-group">
+                <label>Total Loan Principal</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.loanTotalPrincipal"
+                    type="number"
+                    id="loanTotalPrincipal-form-1"
+                    class="form-control"
+                    name="loanTotalPrincipal"
+                    formControlName="loanTotalPrincipal"
+                    [ngClass]="{
+                      'is-invalid':
+                        createLoanFormSubmitted &&
+                        lf.loanTotalPrincipal.invalid,
+                      'is-valid':
+                        createLoanFormSubmitted &&
+                        !lf.loanTotalPrincipal.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="!isUnlimitedView">
+              <div class="form-group">
+                <label>Final Loan Repayment Total (Expected)</label>
+                <div class="form-group col-6">
+                  <label class="text-success">{{
+                    model.loanSingleRepaymentAmount *
+                    model.loanRepaymentTotalCount
+                      ? model.loanSingleRepaymentAmount *
+                        model.loanRepaymentTotalCount
+                      : "empty"
+                  }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+          <div class="ft-book title">Supported Document</div>
+          <br />
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <label for="hardcopy-form-1">Upload Contract Image</label>
+              <br />
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath)"
+                type="file"
+                name="hardcopy-form-1"
+                class="form-control-file"
+                id="hardcopy-form-1"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath2)"
+                type="file"
+                name="hardcopy-form-2"
+                class="form-control-file"
+                id="hardcopy-form-2"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath3)"
+                type="file"
+                class="form-control-file"
+                name="hardcopy-form-3"
+                id="hardcopy-form-3"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath4)"
+                type="file"
+                class="form-control-file"
+                name="hardcopy-form-4"
+                id="hardcopy-form-4"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath5)"
+                type="file"
+                class="form-control-file"
+                name="hardcopy-form-5"
+                id="hardcopy-form-5"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group mb-2">
+              <input
+                #file
+                (change)="onChange(file.files, hardcopyImagePath6)"
+                type="file"
+                class="form-control-file"
+                name="hardcopy-form-6"
+                id="hardcopy-form-6"
+              />
+            </div>
+          </div>
+          <br />
+          <button
+            (click)="onSubmit()"
+            type="button"
+            class="btn btn-primary mr-2"
+          >
+            <i class="ft-check-square mr-1"></i>Submit
+          </button>
+          <button type="button" class="btn btn-secondary" backButton>
+            <i class="ft-x mr-1"></i>Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

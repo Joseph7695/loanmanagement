@@ -1,0 +1,20 @@
+meta {
+  name: add unlimited loan
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/api/loans/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {"loanApplicationDate":"2024-03-28T00:00:00.000Z","customer":{"id":1,"name":"admin1 customer","ic":"960312-13-3424","icImagePath":"icImagePath/icImagePath-1711619002542.jpeg","homeAddressImagePath":null,"homeAddressGoogleMapsUrl":"1a lorong 2 jalan getah","phoneNumber":"1163292737","occupation":"Software Engineer","companyName":"company","officeLocationImagePath":null,"officeLocationGoogleMapsUrl":"1a lorong 2 jalan getah","salary":1000,"carPlateNumber":"plate","emergencyContactName":null,"emergencyContactNumber":"1163292737","emergencyContactName2":null,"emergencyContactNumber2":null,"emergencyContactName3":null,"emergencyContactNumber3":null,"emergencyContactName4":null,"emergencyContactNumber4":null,"emergencyContactName5":null,"emergencyContactNumber5":null,"waterUtilityBillImagePath":null,"electricUtilityBillImagePath":null,"salarySlipImagePath":null,"isBlacklist":false,"createdDate":"2024-03-28T01:43:22.589Z","updatedDate":"2024-03-28T01:43:22.589Z","deletedDate":null,"user":{"id":2,"username":"admin1","role":"ADMIN2","name":"admin1","isStillWorking":true,"createdDate":"2024-03-28T01:25:22.787Z","updatedDate":"2024-03-28T01:25:22.787Z","deletedDate":null}},"user":{"id":2,"username":"admin1","role":"ADMIN2","name":"admin1","isStillWorking":true,"createdDate":"2024-03-28T01:25:22.787Z","updatedDate":"2024-03-28T01:25:22.787Z","deletedDate":null},"name":"unlimited loan","loanedAmount":1000,"loanRepaymentFrequency":"WEEKLY","loanSingleRepaymentAmount":100,"loanTotalPrincipal":1000,"isUnlimited":true}
+  
+}

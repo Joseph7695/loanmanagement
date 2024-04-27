@@ -1,0 +1,559 @@
+<ng-template #noFile>
+  <label class="text-danger">No File Uploaded</label>
+  <br />
+</ng-template>
+
+<div class="row">
+  <button type="button" backButton class="col-2 btn-sm btn-primary">
+    go back
+  </button>
+</div>
+
+<!-- Media object starts -->
+
+<section class="loans-edit" *ngIf="loaded">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+            <ul
+              ngbNav
+              #nav="ngbNav"
+              [activeId]="3"
+              class="nav-tabs justify-content-left"
+            >
+              <li [ngbNavItem]="1">
+                <a ngbNavLink class="nav-link d-flex align-items-center">
+                  <i class="mr-1"></i>
+                  <span class="d-none d-sm-block">Loan Details</span>
+                </a>
+                <ng-template ngbNavContent>
+                  <!-- Account content starts -->
+                  <div class="mt-2" id="Information">
+                    <!-- Media object starts -->
+                    <!-- <label class="p">Name:</label> -->
+                    <br />
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="p">Package Name:</label>
+                        <div class="p">
+                          {{ loan.name }}
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label class="p">Customer Name:</label>
+                        <div class="p">
+                          {{ loan.customer.name }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="p">Borrowed Amount:</label>
+                        <div class="p">
+                          {{ loan.loanedAmount }}
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label class="p">Is Unlimited:</label>
+                        <div class="p">
+                          {{ loan.isUnlimited }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col">
+                        <label class="p">Loan Repayment Start Date:</label>
+                        <div class="p">
+                          {{ loan.loanApplicationDate | date }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col">
+                        <label class="p">Loan Repayment Frequency:</label>
+                        <div class="p">
+                          {{ loan.loanRepaymentFrequency }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="p">Loan Repayment Total Count:</label>
+                        <div class="p">
+                          {{
+                            loan.isUnlimited
+                              ? "Unlimited"
+                              : loan.loanRepaymentTotalCount
+                          }}
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label class="p">Single Repayment Amount </label>
+                        <div class="p">
+                          {{ loan.loanSingleRepaymentAmount }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="p"
+                          >Currently Received
+                          {{
+                            loan.isUnlimited
+                              ? ""
+                              : "/ Expected Total Receivable"
+                          }}:</label
+                        >
+                        <div class="p">
+                          {{ receivedAmountSum }} /
+                          {{ loan.isUnlimited ? "∞" : expectedAmountSum }}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <hr />
+                  </div>
+                </ng-template>
+              </li>
+              <li
+                [ngbNavItem]="2"
+                *ngIf="
+                  httpService.role == 'SUPERADMIN' ||
+                  httpService.role == 'COLLECTOR' ||
+                  httpService.role == 'ADMIN2'
+                "
+              >
+                <a ngbNavLink class="nav-link d-flex align-items-center">
+                  <i class="mr-1"></i>
+                  <span class="d-none d-sm-block">Supported Documents</span>
+                </a>
+                <ng-template ngbNavContent>
+                  <!-- Account content starts -->
+                  <div class="mt-2" id="documents">
+                    <div class="row">
+                      <label class="p">Contract Image:</label>
+                      <div class="col-6">
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath)
+                            }}"
+                            class="p"
+                          >
+                            Download 1
+                          </a>
+                        </div>
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath2; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath2)
+                            }}"
+                            class="p"
+                          >
+                            Download 2</a
+                          >
+                        </div>
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath3; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath3)
+                            }}"
+                            class="p"
+                          >
+                            Download 3</a
+                          >
+                        </div>
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath4; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath4)
+                            }}"
+                            class="p"
+                          >
+                            Download 4</a
+                          >
+                        </div>
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath5; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath5)
+                            }}"
+                            class="p"
+                          >
+                            Download 5</a
+                          >
+                        </div>
+                        <div
+                          class="col-12 col-lg-3"
+                          *ngIf="loan.hardcopyImagePath6; else noFile"
+                        >
+                          <a
+                            href="{{
+                              httpService.getFile(loan.hardcopyImagePath6)
+                            }}"
+                            class="p"
+                          >
+                            Download 6</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li
+                [ngbNavItem]="3"
+                *ngIf="
+                  httpService.role == 'SUPERADMIN' ||
+                  httpService.role == 'COLLECTOR' ||
+                  httpService.role == 'ADMIN2'
+                "
+              >
+                <a ngbNavLink class="nav-link d-flex align-items-center">
+                  <i class="credit-card mr-1"></i>
+                  <span class="d-none d-sm-block">Repayments</span>
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="card">
+                    <div class="card-header d-flex">
+                      <p class="card-title">Loan Repayments</p>
+                      <div class="col-sm">
+                        <button
+                          type="button"
+                          class="btn btn-primary position-relative"
+                          *ngIf="httpService.role == 'SUPERADMIN'"
+                          (click)="repayCheckedLoans()"
+                        >
+                          <i class="icon-basket"></i>Repay checked loans
+                        </button>
+                      </div>
+                      <div class="col-sm">
+                        <button
+                          type="button"
+                          class="btn btn-primary position-relative"
+                          *ngIf="
+                            httpService.role == 'SUPERADMIN' && loan.isUnlimited
+                          "
+                          (click)="finishUnlimitedLoan()"
+                        >
+                          <i class="icon-basket"></i>Finish Unlimited Loan
+                        </button>
+                      </div>
+                      <div class="col-sm">
+                        <button
+                          type="button"
+                          class="btn btn-primary position-relative"
+                          *ngIf="
+                            httpService.role == 'SUPERADMIN' && loan.isUnlimited
+                          "
+                          (click)="payPrincipal(payPrincipalModal)"
+                        >
+                          <i class="icon-basket"></i>Pay Principal
+                        </button>
+                      </div>
+                    </div>
+                    <div class="card-content table-responsive">
+                      <div class="card-body">
+                        <ngx-datatable
+                          class="bootstrap core-bootstrap"
+                          [rows]="repayments"
+                          [rowHeight]="'auto'"
+                          [columnMode]="ColumnMode.force"
+                          [headerHeight]="50"
+                          [footerHeight]="50"
+                          [scrollbarH]="true"
+                          [scrollbarV]="false"
+                          [style.font-size]="'max(1.2vw, 12px)'"
+                          [(selected)]="chkBoxSelected"
+                          selectionType="checkbox"
+                          (select)="customChkboxOnSelect($event)"
+                        >
+                          <ngx-datatable-column
+                            [width]="80"
+                            [sortable]="false"
+                            [canAutoResize]="false"
+                            [draggable]="false"
+                            [resizeable]="false"
+                            *ngIf="httpService.role == 'SUPERADMIN'"
+                          >
+                            <ng-template
+                              ngx-datatable-header-template
+                              let-value="value"
+                              let-allRowsSelected="allRowsSelected"
+                              let-selectFn="selectFn"
+                            >
+                              <div class="custom-control custom-checkbox">
+                                <input
+                                  type="checkbox"
+                                  [checked]="allRowsSelected"
+                                  (change)="selectFn(!allRowsSelected)"
+                                />
+                              </div>
+                            </ng-template>
+                            <ng-template
+                              ngx-datatable-cell-template
+                              let-value="value"
+                              let-isSelected="isSelected"
+                              let-onCheckboxChangeFn="onCheckboxChangeFn"
+                            >
+                              <div class="custom-control custom-checkbox">
+                                <input
+                                  type="checkbox"
+                                  [checked]="isSelected"
+                                  (change)="onCheckboxChangeFn($event)"
+                                />
+                              </div>
+                            </ng-template>
+                          </ngx-datatable-column>
+                          <ngx-datatable-column
+                            name="Action"
+                            prop="id"
+                            [width]="150"
+                            *ngIf="httpService.role == 'SUPERADMIN'"
+                          >
+                            <ng-template
+                              let-row="row"
+                              let-name="value"
+                              ngx-datatable-cell-template
+                              class="row"
+                            >
+                              <div class="d-flex align-items-center">
+                                <div class="cell-line-height">
+                                  <a>
+                                    <i
+                                      class="icon-basket fa-lg text-warning mr-2"
+                                      (click)="payRepayment(row, paidModal)"
+                                    ></i>
+                                  </a>
+
+                                  <a>
+                                    <i
+                                      class="icon-hourglass fa-lg text-warning mr-2"
+                                      (click)="
+                                        extendRepayment(row, extendModal)
+                                      "
+                                    ></i>
+                                  </a>
+                                </div>
+                              </div>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column
+                            name="Expected Repayment Date"
+                            prop="id"
+                            [width]="300"
+                          >
+                            <ng-template
+                              let-row="row"
+                              let-name="value"
+                              ngx-datatable-cell-template
+                            >
+                              <div class="d-flex align-items-center">
+                                <div class="cell-line-height">
+                                  <p
+                                    class="font-medium-1 line-height-1 mb-0"
+                                    [ngStyle]="
+                                      row.isPrincipalRepayment
+                                        ? { 'background-color': 'Gold' }
+                                        : row.isPaid &&
+                                          row.receivedAmount >=
+                                            row.repaymentAmount
+                                        ? { 'background-color': 'Aquamarine' }
+                                        : row.targetRepaymentDate < now
+                                        ? {
+                                            'background-color': 'Crimson',
+                                            color: 'white'
+                                          }
+                                        : {}
+                                    "
+                                  >
+                                    {{
+                                      row.extendedRepaymentDate ||
+                                        row.targetRepaymentDate | date
+                                    }}
+                                  </p>
+                                </div>
+                              </div>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column
+                            name="Received / Target Amount"
+                            prop="id"
+                            [width]="380"
+                          >
+                            <ng-template
+                              let-row="row"
+                              let-name="value"
+                              ngx-datatable-cell-template
+                            >
+                              <div class="d-flex align-items-center">
+                                <div class="cell-line-height">
+                                  <p class="font-medium-1 line-height-1 mb-0">
+                                    {{ row.receivedAmount }} /
+                                    {{ row.repaymentAmount }}
+                                  </p>
+                                </div>
+                              </div>
+                            </ng-template>
+                          </ngx-datatable-column>
+                        </ngx-datatable>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div [ngbNavOutlet]="nav"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #paidModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <p class="modal-title">
+      Paying repayment at target date:
+      {{ selectedRepayment.targetRepaymentDate | date }}, extended date:
+      {{ selectedRepayment.extendedRepaymentDate | date }} ?
+    </p>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #extendModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <p class="modal-title">
+      Extending repayment at target:
+      {{ selectedRepayment.targetRepaymentDate }}, extended:
+      {{ selectedRepayment.extendedRepaymentDate }} ?
+    </p>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Target repayment date</label>
+      <input
+        [(ngModel)]="targetRepaymentDate"
+        type="date"
+        id="loanDate-form-1"
+        class="form-control"
+        name="loanApplicationDate"
+      />
+    </div>
+    <div class="form-group">
+      <label>Repayment Amount</label>
+      <input
+        [(ngModel)]="selectedRepayment.repaymentAmount"
+        type="number"
+        id="repaymentAmount-form-1"
+        class="form-control"
+        name="repaymentAmount"
+      />
+    </div>
+    <div class="form-group">
+      <label>Received Amount (if any)</label>
+      <input
+        [(ngModel)]="selectedRepayment.receivedAmount"
+        type="number"
+        id="loanedAmount-form-1"
+        class="form-control"
+        name="loanedAmount"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #payPrincipalModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <p class="modal-title">
+      Paying Principal for loan: {{ totalPaidPrincipal }} /
+      {{ loan.loanTotalPrincipal }} paid
+    </p>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Amount</label>
+      <input
+        [(ngModel)]="repaymentAmount"
+        type="number"
+        id="repaymentAmount-form-1"
+        class="form-control"
+        name="repaymentAmount"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>

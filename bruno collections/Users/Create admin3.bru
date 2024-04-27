@@ -1,0 +1,23 @@
+meta {
+  name: Create admin3
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/users/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+    "password": "ADMIN3",
+    "username": "ADMIN3",
+    "role": "ADMIN3"
+  }
+}

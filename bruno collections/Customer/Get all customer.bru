@@ -1,0 +1,15 @@
+meta {
+  name: Get all customer
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://redactedclientname.com.my/api/customers
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}

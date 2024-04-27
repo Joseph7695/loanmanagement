@@ -1,0 +1,26 @@
+meta {
+  name: Edit customer
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/customers/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+    "id": 6,
+    "name": "John edited Doe",
+    "salarySlipImagePath": "/images/salary_slip.jpg",
+    "hardcopyImagePath": "/images/hardcopy_documents.jpg",
+    "isBlacklist": false
+  }
+  
+}

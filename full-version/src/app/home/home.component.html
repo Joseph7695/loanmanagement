@@ -1,0 +1,678 @@
+<ng-template #accessDenied>
+  <div class="data text-danger">(No Permission)</div>
+</ng-template>
+<ng-template #noAgent>
+  <div class="data text-danger">No Agent</div>
+</ng-template>
+
+
+<div class="row">
+  <div class="col-sm">
+    <button
+      type="button"
+      class="btn btn-primary position-relative"
+      routerLink="/forms/createNewLoan"
+      [queryParams]="{ isUnlimited: false }"
+      [style.font-size]="'max(1vw, 10px)'"
+      *ngIf="httpService.role == 'SUPERADMIN'"
+    >
+      <i class="icon-user-follow"></i> New Loan (Normal)
+    </button>
+  </div>
+  <div class="col-sm">
+    <button
+      type="button"
+      class="btn btn-primary position-relative"
+      routerLink="/forms/createNewLoan"
+      [queryParams]="{ isUnlimited: true }"
+      [style.font-size]="'max(1vw, 10px)'"
+      *ngIf="httpService.role == 'SUPERADMIN'"
+    >
+      <i class="icon-user-follow"></i> New Loan (Unlimited)
+    </button>
+  </div>
+  <div class="col-sm">
+    <button
+      type="button"
+      class="btn btn-primary position-relative"
+      *ngIf="httpService.role == 'SUPERADMIN'"
+      [style.font-size]="'max(1vw, 10px)'"
+      (click)="repayCheckedLoans()"
+    >
+      <i class="icon-basket"></i>Repay Checked Loans
+    </button>
+  </div>
+</div>
+
+<section id="home">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" [style.font-size]="'max(1.3vw, 13px)'">
+            Tomorrow Due Loan Repayments
+          </h4>
+        </div>
+        <div class="card-content table-responsive">
+          <div class="card-body">
+            <ngx-datatable
+              class="bootstrap core-bootstrap"
+              [rows]="tomorrowLoans"
+              [rowHeight]="'auto'"
+              [externalPaging]="true"
+              [count]="tomorrowLoansTotalItems"
+              [offset]="tomorrowLoansCurrentPage"
+              (page)="setTomorrowRepaymentsPage($event)"
+              [columnMode]="ColumnMode.force"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [scrollbarH]="true"
+              [scrollbarV]="false"
+              [style.font-size]="'max(1.2vw, 12px)'"
+              [selected]="ytdchkBoxSelected"
+              selectionType="checkbox"
+              (select)="ytdcustomChkboxOnSelect($event)"
+            >
+              <ngx-datatable-column
+                [width]="80"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="false"
+                [resizeable]="false"
+                *ngIf="httpService.role == 'SUPERADMIN'"
+              >
+                <ng-template
+                  ngx-datatable-header-template
+                  let-value="value"
+                  let-allRowsSelected="allRowsSelected"
+                  let-selectFn="selectFn"
+                >
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="allRowsSelected"
+                      (change)="selectFn(!allRowsSelected)"
+                    />
+                  </div>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-isSelected="isSelected"
+                  let-onCheckboxChangeFn="onCheckboxChangeFn"
+                >
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected"
+                      (change)="onCheckboxChangeFn($event)"
+                    />
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column
+                name="Action"
+                prop="id"
+                [width]="150"
+                *ngIf="httpService.role == 'SUPERADMIN'"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a>
+                        <i
+                          class="icon-basket fa-lg text-warning mr-2"
+                          (click)="payRepayment(row, paidModal)"
+                        ></i>
+                      </a>
+
+                      <a>
+                        <i
+                          class="icon-hourglass fa-lg text-warning mr-2"
+                          (click)="extendRepayment(row, content)"
+                        ></i>
+                      </a>
+
+                      <a>
+                        <i
+                          class="mr-2 fa-lg"
+                          [ngClass]="{
+                            'icon-user-unfollow text-danger':
+                              row.customer.isBlacklist == false,
+                            'icon-user-following text-success':
+                              row.customer.isBlacklist == true
+                          }"
+                          (click)="blacklist(row.customer)"
+                        >
+                        </i>
+                      </a>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Customer" prop="id" [width]="150">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/customerDetails/{{
+                          row.customer.id
+                        }}"
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.customer.isBlacklist
+                            ? { 'background-color': 'red', color: 'white' }
+                            : { color: 'DodgerBlue' }
+                        "
+                        >{{ row.customer.name }}</a
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column
+                name="Agent"
+                prop="id"
+                [width]="150"
+                *ngIf="['SUPERADMIN', 'COLLECTOR'].includes(httpService.role)"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        *ngIf="row.user; else noAgent"
+                        routerLink="/tables/user/{{ row.user?.id }}/edit"
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.customer.isBlacklist
+                            ? { 'background-color': 'red', color: 'white' }
+                            : { color: 'DodgerBlue' }
+                        "
+                      >
+                        >{{ row.user?.name }}</a
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Package Name" prop="id" [width]="150">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/loanDetails/{{ row.id }}"
+                        class="text-info"
+                        *ngIf="
+                          ['SUPERADMIN', 'COLLECTOR'].includes(
+                            httpService.role
+                          );
+                          else notSuperAdmin
+                        "
+                      >
+                        {{ row.name }}
+                      </a>
+
+                      <ng-template #notSuperAdmin>
+                        <p>{{ row.name }}</p>
+                      </ng-template>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <!-- <ngx-datatable-column
+                name="Loan Repayment Amount"
+                prop="id"
+                [width]="300"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p class="font-medium-1 line-height-1 mb-0">
+                        {{ row.loanSingleRepaymentAmount }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column> -->
+
+              <!-- <ngx-datatable-column
+                name="Expected Repayment Date"
+                prop="id"
+                [width]="300"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.isPaid &&
+                          row.receivedAmount >= row.repaymentAmount
+                            ? { 'background-color': 'Aquamarine' }
+                            : row.targetRepaymentDate < now
+                            ? { 'background-color': 'Crimson', color: 'white' }
+                            : {}
+                        "
+                      >
+                        {{
+                          row.extendedRepaymentDate || row.targetRepaymentDate
+                            | date
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column> -->
+
+              <ngx-datatable-column
+                name="Current repayment / Total Repayments"
+                prop="id"
+                [width]="380"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p class="font-medium-1 line-height-1 mb-0">
+                        {{ row.paidRepaymentCount }} /
+                        {{ row.repayments.length }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="home">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" [style.font-size]="'max(1.3vw, 13px)'">
+            Today Due Loan Repayments
+          </h4>
+        </div>
+        <div class="card-content table-responsive">
+          <div class="card-body">
+            <ngx-datatable
+              class="bootstrap core-bootstrap"
+              [rows]="todayLoans"
+              [rowHeight]="'auto'"
+              [externalPaging]="true"
+              [limit]="itemsPerPage"
+              [count]="todayLoansTotalItems"
+              [offset]="todayLoansCurrentPage"
+              (page)="setTodayRepaymentsPage($event)"
+              [columnMode]="ColumnMode.force"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [scrollbarH]="true"
+              [scrollbarV]="false"
+              [style.font-size]="'max(1.2vw, 12px)'"
+              [selected]="todaychkBoxSelected"
+              selectionType="checkbox"
+              (select)="todaycustomChkboxOnSelect($event)"
+            >
+              <ngx-datatable-column
+                [width]="80"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="false"
+                [resizeable]="false"
+                *ngIf="httpService.role == 'SUPERADMIN'"
+              >
+                <ng-template
+                  ngx-datatable-header-template
+                  let-value="value"
+                  let-allRowsSelected="allRowsSelected"
+                  let-selectFn="selectFn"
+                >
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="allRowsSelected"
+                      (change)="selectFn(!allRowsSelected)"
+                    />
+                  </div>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-isSelected="isSelected"
+                  let-onCheckboxChangeFn="onCheckboxChangeFn"
+                >
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected"
+                      (change)="onCheckboxChangeFn($event)"
+                    />
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column
+                name="Action"
+                prop="id"
+                [width]="150"
+                *ngIf="httpService.role == 'SUPERADMIN'"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                  class="row"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a>
+                        <i
+                          class="icon-basket fa-lg text-warning mr-2"
+                          (click)="payRepayment(row, paidModal)"
+                        ></i>
+                      </a>
+
+                      <a>
+                        <i
+                          class="icon-hourglass fa-lg text-warning mr-2"
+                          (click)="extendRepayment(row, content)"
+                        ></i>
+                      </a>
+
+                      <a>
+                        <i
+                          class="mr-2 fa-lg"
+                          [ngClass]="{
+                            'icon-user-unfollow text-danger':
+                              row.customer.isBlacklist == false,
+                            'icon-user-following text-success':
+                              row.customer.isBlacklist == true
+                          }"
+                          (click)="blacklist(row.customer)"
+                        >
+                        </i>
+                      </a>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Customer" prop="id" [width]="150">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/customerDetails/{{
+                          row.customer.id
+                        }}"
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.customer.isBlacklist
+                            ? { 'background-color': 'red', color: 'white' }
+                            : { color: 'DodgerBlue' }
+                        "
+                        >{{ row.customer.name }}</a
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column
+                name="Agent"
+                prop="id"
+                [width]="150"
+                *ngIf="['SUPERADMIN', 'COLLECTOR'].includes(httpService.role)"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a *ngIf="row.user; else noAgent"
+                        routerLink="/tables/user/{{ row.user?.id }}/edit"
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.customer.isBlacklist
+                            ? { 'background-color': 'red', color: 'white' }
+                            : { color: 'DodgerBlue' }
+                        "
+                        >{{ row.user?.name }}</a
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Package Name" prop="id" [width]="150">
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <a
+                        routerLink="/tables/loanDetails/{{ row.id }}"
+                        class="text-info"
+                        *ngIf="
+                          ['SUPERADMIN', 'COLLECTOR'].includes(
+                            httpService.role
+                          );
+                          else notSuperAdmin
+                        "
+                      >
+                        {{ row.name }}
+                      </a>
+
+                      <ng-template #notSuperAdmin>
+                        <p>{{ row.name }}</p>
+                      </ng-template>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <!-- <ngx-datatable-column
+                name="Loan Repayment Amount"
+                prop="id"
+                [width]="300"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p class="font-medium-1 line-height-1 mb-0">
+                        {{ row.loanSingleRepaymentAmount }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column> -->
+
+              <!-- <ngx-datatable-column
+                name="Expected Repayment Date"
+                prop="id"
+                [width]="300"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p
+                        class="font-medium-1 line-height-1 mb-0"
+                        [ngStyle]="
+                          row.isPaid &&
+                          row.receivedAmount >= row.repaymentAmount
+                            ? { 'background-color': 'Aquamarine' }
+                            : row.targetRepaymentDate < now
+                            ? { 'background-color': 'Crimson', color: 'white' }
+                            : {}
+                        "
+                      >
+                        {{
+                          row.extendedRepaymentDate || row.targetRepaymentDate
+                            | date
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column> -->
+
+              <ngx-datatable-column
+                name="Current repayment / Total Repayments"
+                prop="id"
+                [width]="380"
+              >
+                <ng-template
+                  let-row="row"
+                  let-name="value"
+                  ngx-datatable-cell-template
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="cell-line-height">
+                      <p class="font-medium-1 line-height-1 mb-0">
+                        {{ row.paidRepaymentCount }} /
+                        {{ row.repayments.length }}
+                      </p>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #paidModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Paying loan {{ selectedRepayment.loan.name }} for
+      {{ selectedRepayment.loan.customer.name }} ?
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Extending loan {{ selectedRepayment.loan.name }} for
+      {{ selectedRepayment.loan.customer.name }} ?
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Target repayment date</label>
+      <input
+        [(ngModel)]="targetRepaymentDate"
+        type="date"
+        id="loanDate-form-1"
+        class="form-control"
+        name="loanApplicationDate"
+      />
+    </div>
+    <div class="form-group">
+      <label>Loan Repayment Amount</label>
+      <input
+        [(ngModel)]="selectedRepayment.repaymentAmount"
+        type="number"
+        id="repaymentAmount-form-1"
+        class="form-control"
+        name="repaymentAmount"
+      />
+    </div>
+    <div class="form-group">
+      <label>Received Amount (if any)</label>
+      <input
+        [(ngModel)]="selectedRepayment.receivedAmount"
+        type="number"
+        id="loanedAmount-form-1"
+        class="form-control"
+        name="loanedAmount"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="c('Submit')">
+      Submit
+    </button>
+  </div>
+</ng-template>

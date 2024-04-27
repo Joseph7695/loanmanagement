@@ -1,0 +1,142 @@
+<div class="col-lg">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Create New Agent</h4>
+    </div>
+
+    <div class="card-content">
+      <div class="card-body">
+        <!-- <p>This is the most basic and default form having input                    [(ngModel)]="model.customer"s, labels and buttons.</p> -->
+        <form [formGroup]="createUserForm">
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <div class="icon-user title">Agent Details</div>
+                <br />
+
+                <label>Username</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.username"
+                    type="text"
+                    id="username-form-1"
+                    class="form-control"
+                    name="username"
+                    formControlName="username"
+                    [ngClass]="{
+                      'is-invalid':
+                        createUserFormSubmitted && lf.username.invalid,
+                      'is-valid':
+                        createUserFormSubmitted && !lf.username.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Password</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.password"
+                    type="text"
+                    id="password-form-1"
+                    class="form-control"
+                    name="password"
+                    formControlName="password"
+                    [ngClass]="{
+                      'is-invalid':
+                        createUserFormSubmitted && lf.password.invalid,
+                      'is-valid':
+                        createUserFormSubmitted && !lf.password.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Nick Name</label>
+                <div class="form-group col-6">
+                  <input
+                    [(ngModel)]="model.name"
+                    type="text"
+                    id="name-form-1"
+                    class="form-control"
+                    name="name"
+                    formControlName="name"
+                    [ngClass]="{
+                      'is-invalid': createUserFormSubmitted && lf.name.invalid,
+                      'is-valid': createUserFormSubmitted && !lf.name.invalid
+                    }"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Role</label>
+                <div class="form-group col-6">
+                  <select
+                    [(ngModel)]="model.role"
+                    name="role"
+                    id="role"
+                    class="form-control"
+                    [style.font-size]="'max(1vw, 10px)'"
+                    formControlName="role"
+                    [ngClass]="{
+                      'is-invalid': createUserFormSubmitted && lf.role.invalid,
+                      'is-valid': createUserFormSubmitted && !lf.role.invalid
+                    }"
+                    required
+                  >
+                    <option
+                      value="SUPERADMIN"
+                      [style.font-size]="'max(1vw, 10px)'"
+                    >
+                      SUPER ADMIN
+                    </option>
+                    <option value="ADMIN2" [style.font-size]="'max(1vw, 10px)'">
+                      ADMIN2
+                    </option>
+                    <option value="ADMIN3" [style.font-size]="'max(1vw, 10px)'">
+                      ADMIN3
+                    </option>
+                    <option
+                      value="COLLECTOR"
+                      [style.font-size]="'max(1vw, 10px)'"
+                    >
+                      COLLECTOR
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <button
+            (click)="onSubmit()"
+            type="button"
+            class="btn btn-primary mr-2"
+          >
+            <i class="ft-check-square mr-1"></i>Submit
+          </button>
+          <button type="button" class="btn btn-secondary" backButton>
+            <i class="ft-x mr-1"></i>Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

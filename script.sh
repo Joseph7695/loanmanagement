@@ -1,0 +1,1 @@
+docker run -d -e MYSQL_USER=sysadmin -e MYSQL_PASSWORD=password -e MYSQL_ROOT_PASSWORD=root_password -p 3306:3306 --name redactedclientnamedocker mysql:latest

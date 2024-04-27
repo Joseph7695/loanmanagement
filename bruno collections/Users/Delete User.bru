@@ -1,0 +1,28 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3000/users/delete?userId=6
+  body: none
+  auth: bearer
+}
+
+query {
+  userId: 6
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+    "password": "ADMIN2",
+    "username": "ADMIN2edited",
+    "role": "ADMIN2",
+    "id": 6
+  }
+}

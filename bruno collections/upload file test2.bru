@@ -1,0 +1,19 @@
+meta {
+  name: upload file test2
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/loans/uploadsample
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:multipart-form {
+  files: @file(C:\Users\User\Downloads\00005-1899986691.png)
+}

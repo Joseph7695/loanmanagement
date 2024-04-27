@@ -1,0 +1,31 @@
+meta {
+  name: update loan
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/loans/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "Home Loan",
+    "loanedAmount": 200000,
+    "loanRepaymentStartDate": "2024-04-01",
+    "loanRepaymentFrequency": "Monthly",
+    "loanRepaymentTotalCount": 240,
+    "loanRepaymentAmount": 1000,
+    "isUnlimited": false,
+    "customer": {
+      "id": 5  }
+  }
+  
+}

@@ -1,0 +1,15 @@
+meta {
+  name: (test) Get Profile
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/auth/profile
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accesstoken}}
+}
